@@ -141,13 +141,13 @@ func main() {
 					Port: uint16(transmissionPort),
 				})
 			if err != nil {
-				log.Printf("Error: not able to connect to Transmission, will try a minute later\n")
+				log.Printf("Error: not able to connect to Transmission, will try a minute later\n%v\n", err)
 				time.Sleep(1 * time.Minute)
 				continue
 			}
 			torrent, err := transmissionbt.TorrentAddFileDownloadDir(fileName, "/"+torType)
 			if err != nil {
-				log.Printf("Error: not able to push file to Transmission, will try a minute later\n")
+				log.Printf("Error: not able to push file to Transmission, will try a minute later\n%v\n", err)
 				time.Sleep(1 * time.Minute)
 				continue
 			} else {
@@ -155,7 +155,7 @@ func main() {
 				log.Printf("Debug: %d, %s, %s\n", *torrent.ID, *torrent.Name, *torrent.HashString)
 				err := deleteFile(fileName)
 				if err != nil {
-					log.Printf("error: ", err)
+					log.Printf("error: %s\n", err)
 				}
 			}
 			log.Printf("Done")
