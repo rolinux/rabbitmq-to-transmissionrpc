@@ -11,7 +11,7 @@ COPY . $DISTRIBUTION_DIR
 
 RUN go mod download
 
-RUN CGO_ENABLED=0 go build -v -a -installsuffix cgo -o rabbitmq-to-transmissionrpc main.go
+RUN CGO_ENABLED=0 go build -v -a -installsuffix cgo -o rabbitmq-to-transmissionrpc config.go main.go
 
 # run container with app on top on scratch empty container
 FROM scratch
