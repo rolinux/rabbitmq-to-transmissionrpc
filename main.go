@@ -6,7 +6,6 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -53,43 +52,10 @@ func deleteFile(path string) error {
 }
 
 func main() {
-	// reading environment variables
-	amqpAddr, err := getEnv("AMQP_ADDRESS")
-	if err != nil {
-		log.Fatal("error: ", err)
-	}
+	// Load configuration from config.yaml
+	Config()
 
-	queueName, err := getEnv("QUEUE_NAME")
-	if err != nil {
-		log.Fatal("error: ", err)
-	}
-
-	transmissionHost, err := getEnv("TRANSMISSION_HOST")
-	if err != nil {
-		log.Fatal("error: ", err)
-	}
-
-	transmissionPortString, err := getEnv("TRANSMISSION_PORT")
-	if err != nil {
-		log.Fatal("error: ", err)
-	}
-
-	transmissionPort, err := strconv.Atoi(transmissionPortString)
-	if err != nil {
-		log.Fatal("error: TRANSMISSION_PORT not an int", err)
-	}
-
-	transmissionRPCUser, err := getEnv("TRANSMISSION_RPC_USER")
-	if err != nil {
-		log.Fatal("error: ", err)
-	}
-
-	transmissionRPCPassword, err := getEnv("TRANSMISSION_RPC_PASSWORD")
-	if err != nil {
-		log.Fatal("error: ", err)
-	}
-
-	conn, err := amqp.Dial(amqpAddr)
+	conn, err := amqp.Dial(conf.AmqpAddr)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -98,12 +64,12 @@ func main() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		queueName, // name
-		true,      // durable
-		false,     // delete when unused
-		false,     // exclusive
-		false,     // no-wait
-		nil,       // arguments
+		conf.QueueName, // name
+		true,           // durable
+		false,          // delete when unused
+		false,          // exclusive
+		false,          // no-wait
+		nil,            // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 
@@ -136,9 +102,9 @@ func main() {
 			failOnError(err, "Failed to write binary file")
 
 			// maybe wrong to open connection to Transmission RPC for each file
-			transmissionbt, err := transmissionrpc.New(transmissionHost, transmissionRPCUser, transmissionRPCPassword,
+			transmissionbt, err := transmissionrpc.New(conf.TransmissionHost, conf.TransmissionRPCUser, conf.TransmissionRPCPassword,
 				&transmissionrpc.AdvancedConfig{
-					Port: uint16(transmissionPort),
+					Port: conf.TransmissionPort,
 				})
 			if err != nil {
 				log.Printf("Error: not able to connect to Transmission, will try a minute later\n%v\n", err)
