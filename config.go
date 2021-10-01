@@ -21,7 +21,7 @@ type config struct {
 
 // Config - function to read the config.yaml
 func Config() {
-	yamlFile, err := ioutil.ReadFile("/vault/secrets/config.yaml")
+	yamlFile, err := ioutil.ReadFile("/secrets/config.yaml")
 	if err != nil {
 		log.Printf("yamlFile.Get err   #%v ", err)
 	}
