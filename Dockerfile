@@ -1,9 +1,8 @@
-FROM golang AS build
+FROM mirror.gcr.io/library/golang AS build
 
 ENV DISTRIBUTION_DIR /go/src/gitlab.com/rolinux/rabbitmq-to-transmissionrpc
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		git \
+RUN apt-get update && apt-get install -y --no-install-recommends git \
 	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR $DISTRIBUTION_DIR
