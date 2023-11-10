@@ -1,10 +1,10 @@
 module rabbitmq-to-transmissionrpc
 
-go 1.20
+go 1.21.4
 
 require (
 	github.com/hekmon/transmissionrpc v1.1.0
-	github.com/streadway/amqp v1.0.0
+	github.com/streadway/amqp v1.1.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
